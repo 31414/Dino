@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+ 
+<body>
+
+<div>
+<h2>Gra Dino v1.0 by SuperHacker</h2>   
+<br /><p>Dino idzie przez pustynie.</p>
+</div>
+
+<canvas id="plansza_canvas" width="600px" height="200px">
+</canvas>
+
+<script>
+    let plansza, rysowanie;
+    plansza = document.getElementById("plansza_canvas");
+    rysowanie = plansza.getContext("2d");  
+
+    let points = 0;
+    
+    class klasa_kaktus {
+       constructor() {
+          this.UstawKaktus();
+       }
+       UstawKaktus() {
+          this.kaktus_x = plansza.width + 40; 
+          this.kaktus_y = 140; 
+          this.kaktus_szerokosc_x = 18; 
+          this.kaktus_wysokosc_y = 30; 
+          this.kaktus_predkosc_x = 1.5; 
+       }
+       RysujKaktus() {
+          rysowanie.fillStyle = "rgb(36,170,0)";    
+          rysowanie.fillRect(this.kaktus_x,this.kaktus_y,
+          this.kaktus_szerokosc_x,this.kaktus_wysokosc_y);
+          this.kaktus_x = this.kaktus_x - this.kaktus_predkosc_x;
+          if ( this.kaktus_x < 0 )
+             this.UstawKaktus(); 
+       }
+    }
+    
+    class klasa_ptak {
+       constructor() {
+          this.UstawPtaka();
+       }
+       UstawPtaka() {
+          this.ptak_x = plansza.width + 40; 
+          this.ptak_y = 120; 
+          this.ptak_szerokosc_x = 40; 
+          this.ptak_wysokosc_y = 14; 
+          this.ptak_predkosc_x = 1.5; 
+       }
+       RysujPtaka() {
+          rysowanie.fillStyle = "rgb(94,83,82)";    
+          rysowanie.fillRect(this.ptak_x,this.ptak_y,
+          this.ptak_szerokosc_x,this.ptak_wysokosc_y);
+          this.ptak_x = this.ptak_x - this.ptak_predkosc_x;
+          if ( this.ptak_x < 0 )
+             this.UstawPtaka(); 
+       }
+    }
+
+ class klasa_dino {
+   constructor() {
+      this.UstawDino();
+   }
+   UstawDino() {
+      this.dino_x = 60; 
+      this.dino_y = 140; 
+      this.dino_szerokosc_x = 18; 
+      this.dino_wysokosc_y = 30; 
+      this.czy_dino_skacze = false; 
+      this.grawitacja = 0.125;
+   }
+   RysujDino() {
+      rysowanie.fillStyle = "rgb(0,0,255)";    
+      rysowanie.fillRect(this.dino_x,this.dino_y, 
+      this.dino_szerokosc_x,this.dino_wysokosc_y);
+      if (this.czy_dino_skacze == true) {
+         this.dino_y = this.dino_y - this.predkosc;
+         this.predkosc = this.predkosc - this.grawitacja;         
+      }   
+      if (this.dino_y+this.dino_wysokosc_y  >= 170) {
+         this.UstawDino();
+      }
+}	  
+   DinoSkacz() {
+      if ( this.czy_dino_skacze == false ) {
+         this.czy_dino_skacze = true;
+         this.predkosc = 4;
+      }
+   }   
+}  
+
+    
+
+    function RysujPlansze() {
+       rysowanie.fillStyle = "rgb(249,218,255)"; 
+       rysowanie.fillRect(0,0, plansza.width,plansza.height); //zmiana
+    }
+    function RysujZiemie() {
+       rysowanie.fillStyle = "rgb(69,0,33)";    
+       rysowanie.fillRect(0,170, plansza.width,5); //zmiana
+    }
+    
+    let kaktus1, kaktus2, dino;
+    kaktus1 = new klasa_kaktus();
+    kaktus2 = new klasa_kaktus();
+    ptak1 = new klasa_ptak();
+    ptak2 = new klasa_ptak();
+    kaktus2.kaktus_x += 250
+    ptak1.ptak_x += 125
+    ptak2.ptak_x += 375
+    dino = new klasa_dino();
+
+
+    function Gra() {
+       RysujPlansze();
+       RysujZiemie();
+       kaktus1.RysujKaktus();
+       kaktus2.RysujKaktus();
+       ptak1.RysujPtaka();
+       ptak2.RysujPtaka();
+       dino.RysujDino();
+       if (((dino.dino_x <= kaktus1.kaktus_x && kaktus1.kaktus_x <= dino.dino_x + dino.dino_szerokosc_x) || (dino.dino_x <= kaktus2.kaktus_x && kaktus2.kaktus_x <= dino.dino_x + dino.dino_szerokosc_x)) && dino.czy_dino_skacze == false) {
+           document.write("Game Over. Your score: ", points)
+           clearInterval(gra_aktywna)
+       }
+       if (((dino.dino_x <= ptak1.ptak_x && ptak1.ptak_x <= dino.dino_x + dino.dino_szerokosc_x) || (dino.dino_x <= ptak2.kaktus_x && ptak2.kaktus_x <= dino.dino_x + dino.dino_szerokosc_x)) && dino.czy_dino_skacze == true) {
+           document.write("Game Over. Your score: ", points)
+           clearInterval(gra_aktywna)
+       }
+       points += 1;
+    }
+
+function UstawWcisnietyKlawisz(zdarzenie) {
+   if ( (zdarzenie.key=='g') || (zdarzenie.key=='ArrowUp') ) {
+       dino.DinoSkacz();
+   }
+ }
+document.addEventListener("keydown", UstawWcisnietyKlawisz, false);
+
+    gra_aktywna = setInterval(Gra, 10); 
+    
+    </script>
+
+</body> 
+</html>
